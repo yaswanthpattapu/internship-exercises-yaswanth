@@ -1,4 +1,4 @@
-package EvenorOddorPrime.exercise;
+package exercise.evenoroddorprime;
 
 import java.util.Scanner;
 import java.util.stream.IntStream;

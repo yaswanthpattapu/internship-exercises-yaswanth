@@ -1,4 +1,4 @@
-package EvenorOddorPrime.exercise;
+package exercise.evenoroddorprime;
 
 import org.junit.Assert;
 import org.junit.Test;
