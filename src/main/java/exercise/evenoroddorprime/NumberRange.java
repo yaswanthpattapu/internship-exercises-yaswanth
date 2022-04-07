@@ -4,11 +4,11 @@ import java.util.Scanner;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Range {
+public class NumberRange {
 
-    public static Stream<String> of(int start, int end) {
+    public static Stream<String> range(int start, int end) {
         IntStream stream = IntStream.range(start, end + 1);
-        return stream.mapToObj(Range::isEvenOddPrime);
+        return stream.mapToObj(NumberRange::isEvenOddPrime);
     }
 
     public static String isEvenOddPrime(int num) {
@@ -30,7 +30,7 @@ public class Range {
         inp1 = sc.nextInt();
         inp2 = sc.nextInt();
 
-        Stream<String> stream = of(inp1, inp2);
+        Stream<String> stream = range(inp1, inp2);
         stream.forEach(System.out::println);
     }
 }
