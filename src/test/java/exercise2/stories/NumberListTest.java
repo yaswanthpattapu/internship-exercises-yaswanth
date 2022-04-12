@@ -15,7 +15,7 @@ public class NumberListTest {
     NumberList obj = new NumberList();
 
     public static boolean isPerfectSquare(int num) {
-        return IntStream.rangeClosed(1, num / 2).anyMatch(i -> i * i == num);
+        return IntStream.rangeClosed(1, num / 2 + 1).anyMatch(i -> i * i == num);
     }
 
     @Test
