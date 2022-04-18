@@ -20,7 +20,7 @@ public class Grep {
         return false;
     }
 
-    public static List<String> matchedStrings(String word, Path file) {
+    public static List<String> matchedLines(String word, Path file) {
         List<String> match = new ArrayList<>();
         try (Stream<String> linesStream = Files.lines(file)) {
             linesStream.forEach(line -> {
@@ -34,12 +34,17 @@ public class Grep {
 
     public static void addResultToFile(List<String> result, Path file) {
         try {
+            boolean status = true;
             File temp = new File(file.toString());
-            if (!temp.exists()) temp.createNewFile();
-            try (var fw = new FileWriter(file.toString(), StandardCharsets.UTF_8, false)) {
-                for (String s : result) {
-                    String str = s + "\n";
-                    fw.append(str);
+            if (!temp.exists()) {
+                status = temp.createNewFile();
+            }
+            if (status) {
+                try (var fw = new FileWriter(file.toString(), StandardCharsets.UTF_8, false)) {
+                    for (String s : result) {
+                        String str = s + "\n";
+                        fw.append(str);
+                    }
                 }
             }
 
@@ -48,20 +53,19 @@ public class Grep {
         }
     }
 
-    public static void searchRecursively(String word, Path folder) {
+    public static List<String> searchRecursively(String word, Path folder) {
+        List<String> match = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(folder)) {
-            paths.forEach(w ->
-            {
-                if (Files.isRegularFile(w)) {
-                    System.out.print(w + " : ");
-                    if (searchString(word, w)) {
-                        System.out.println("Found");
-                        matchedStrings(word, w).forEach(System.out::println);
-                    } else System.out.println("Not found");
+            paths.forEach(w -> {
+                if (Files.isRegularFile(w) && searchString(word, w)) {
+                    for (String line : matchedLines(word, w)) {
+                        match.add(w + ":" + line);
+                    }
                 }
             });
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return match;
     }
 }
