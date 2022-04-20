@@ -1,7 +1,5 @@
 package exercise3.grep;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -34,20 +32,14 @@ public class Grep {
 
     public static void addResultToFile(List<String> result, Path file) {
         try {
-            boolean status = true;
-            File temp = new File(file.toString());
-            if (!temp.exists()) {
-                status = temp.createNewFile();
+            if (!Files.exists(file)) {
+                Files.createFile(file);
             }
-            if (status) {
-                try (var fw = new FileWriter(file.toString(), StandardCharsets.UTF_8, false)) {
-                    for (String s : result) {
-                        String str = s + "\n";
-                        fw.append(str);
-                    }
-                }
+            StringBuilder str = new StringBuilder();
+            for (String s : result) {
+                str.append(s).append("\n");
             }
-
+            Files.write(file, str.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();
         }
