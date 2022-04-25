@@ -1,0 +1,38 @@
+1. Insert some data into a table :
+
+insert into cd.facilities(facid,name,membercost,guestcost,initialoutlay,monthlymaintenance)
+values(9,'Spa',20,30,100000,800);
+
+2. Insert multiple rows of data into a table :
+
+insert into cd.facilities(facid,name,membercost,guestcost,initialoutlay,monthlymaintenance)
+values(9,'Spa',20,30,100000,800),(10,'Squash Court 2',3.5,17.5,5000,80);
+
+3. Insert calculated data into a table :
+
+insert into cd.facilities(facid,name,membercost,guestcost,initialoutlay,monthlymaintenance)
+values((select max(facid) from cd.facilities) + 1,'Spa',20,30,100000,800);
+
+4. Update some existing data :
+
+update cd.facilities set initialoutlay = 10000 where facid = 1;
+
+5. Update multiple rows and columns at the same time :
+
+update cd.facilities set membercost = 6, guestcost = 30 where name in ('Tennis Court 1', 'Tennis Court 2');
+
+6. Update a row based on the contents of another row :
+
+update cd.facilities set membercost = 1.1*(select membercost from cd.facilities where facid = 0), guestcost = 1.1*(select guestcost from cd.facilities where facid = 0) where facid=1;
+
+7. Delete all bookings :
+
+delete from cd.bookings;
+
+8. Delete a member from the cd.members table :
+
+delete from cd.members where memid=37;
+
+9. Delete based on a subquery :
+
+delete from cd.members where memid not in (select memid from cd.bookings);

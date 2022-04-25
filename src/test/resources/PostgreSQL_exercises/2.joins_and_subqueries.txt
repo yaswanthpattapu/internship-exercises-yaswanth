@@ -1,0 +1,35 @@
+1. Retrieve the start times of members' bookings :
+select starttime from cd.members inner join cd.bookings on cd.members.memid = cd.bookings.memid where firstname='David' and surname='Farrell';
+
+2. Work out the start times of bookings for tennis courts :
+
+select starttime as start,name from cd.bookings bk inner join cd.facilities fcs on fcs.facid = bk.facid
+where bk.starttime>='2012-09-21'and
+bk.starttime<'2012-09-22' and
+name like 'Tennis Court%';
+
+3. Produce a list of all members who have recommended another member :
+
+select distinct recs.firstname as firstname, recs.surname as surname
+	from
+		cd.members mems
+		inner join cd.members recs
+			on recs.memid = mems.recommendedby
+order by surname, firstname;
+
+4. Produce a list of all members, along with their recommender
+
+select mems.firstname as memfname, mems.surname as memsname, recs.firstname as recfname, recs.surname as recsname
+from cd.members mems left outer join cd.members recs on recs.memid = mems.recommendedby
+order by memsname, memfname;
+
+5. Produce a list of all members who have used a tennis court :
+
+select distinct mems.firstname || ' ' || mems.surname as member, facs.name as facility
+	from cd.members mems inner join cd.bookings bks on mems.memid = bks.memid
+inner join cd.facilities facs on bks.facid = facs.facid
+	where facs.name in ('Tennis Court 2','Tennis Court 1') order by member, facility
+
+
+
+
