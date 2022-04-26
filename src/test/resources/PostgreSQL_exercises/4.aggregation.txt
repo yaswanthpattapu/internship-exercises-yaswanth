@@ -1,0 +1,14 @@
+1. Count the number of facilities :
+
+select count(*) from cd.facilities;
+
+2. Count the number of expensive facilities :
+
+select count(*) from cd.facilities where guestcost>=10;
+
+3. Count the number of recommendations each member makes :
+
+select recommendedby, count(*)  from cd.members
+where recommendedby is not null group by recommendedby
+order by recommendedby;
+
