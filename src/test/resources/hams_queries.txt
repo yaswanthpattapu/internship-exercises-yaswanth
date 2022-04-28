@@ -1,0 +1,29 @@
+CREATE TABLE Specialisations (
+    id int,
+    name varchar(255),
+    description varchar(255),
+    PRIMARY KEY (id)
+);
+
+INSERT INTO Specialisations VALUES(1,'Cardiologist','Treating diseases related to heart and blood vessels.');
+INSERT INTO Specialisations VALUES(2,'Dermatologist','Treating diseases related to hair, skin, and nails.');
+INSERT INTO Specialisations VALUES(3,'Orthopedician','Dealing with health problems related to the musculoskeletal system');
+INSERT INTO Specialisations VALUES(4,'Ophthalmologist','Dealing with health problems related to eye disorders');
+INSERT INTO Specialisations VALUES(5,'Neurologist','Treat diseases of the brain and spinal cord, peripheral nerves and muscles.');
+
+
+CREATE TABLE Doctors (
+    id int,
+    name varchar(255),
+    gender varchar(255),
+    experience int,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO Doctors VALUES(1,'Edward Jenner','male',8);
+INSERT INTO Doctors VALUES(2,'Elizabeth Blackwell','female',7);
+INSERT INTO Doctors VALUES(3,'Daniel  Williams','male',6);
+INSERT INTO Doctors VALUES(4,'Alexander Fleming','male',8);
+INSERT INTO Doctors VALUES(5,'Helen Brooke','female',5);
+
+
