@@ -1,0 +1,394 @@
+--  CREATE DATABASE Hospital;
+
+
+-- all tables
+
+CREATE TYPE GENDER AS ENUM('F', 'M');
+
+CREATE TABLE users (
+  id INT PRIMARY KEY NOT NULL,
+  name VARCHAR(30) NOT NULL,
+  gender GENDER NOT NULL,
+  dob DATE NOT NULL,
+  mobile_number VARCHAR(10) NOT NULL,
+  otp VARCHAR(6) NOT NULL,
+  otp_expires_at TIMESTAMP,
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE roles (
+  id INT PRIMARY KEY NOT NULL,
+  type VARCHAR(30) NOT NULL
+);
+
+
+CREATE TABLE users_roles (
+  user_id INT REFERENCES users(id) NOT NULL,
+  role_id INT REFERENCES roles(id) NOT NULL
+);
+
+CREATE TABLE doctors (
+  id INT PRIMARY KEY NOT NULL,
+  user_id INT REFERENCES users(id) NOT NULL,
+  qualification VARCHAR(50) NOT NULL,
+  experience INT NOT NULL
+);
+
+CREATE TABLE weekdays (
+  id INT PRIMARY KEY NOT NULL,
+  day VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE shifts_schedules (
+  id INT PRIMARY KEY NOT NULL,
+  doctor_id  INT REFERENCES doctors(id) NOT NULL,
+  day_id INT REFERENCES weekdays(id) NOT NULL,
+  start_time TIMESTAMP NOT NULL,
+  end_time TIMESTAMP NOT NULL
+);
+
+
+CREATE TABLE receptionists (
+  id INT PRIMARY KEY NOT NULL,
+  user_id INT REFERENCES users(id) NOT NULL,
+  qualification VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE patients (
+  id INT PRIMARY KEY NOT NULL,
+  user_id INT NOT NULL REFERENCES users(id),
+  name VARCHAR(30) NOT NULL,
+  gender GENDER NOT NULL,
+  dob DATE NOT NULL,
+  mobile_number VARCHAR(10) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP
+);
+
+
+CREATE TABLE specialisations (
+  id INT PRIMARY KEY NOT NULL,
+  name VARCHAR(200) NOT NULL,
+  description TEXT NOT NULL
+);
+
+CREATE TABLE doctors_specialisations(
+  id INT PRIMARY KEY NOT NULL,
+  specialisation_id INT REFERENCES specialisations(id) NOT NULL,
+  doctor_id INT REFERENCES doctors(id) NOT NULL
+);
+
+CREATE TABLE reasons (
+  id INT PRIMARY KEY NOT NULL,
+  reason VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE cancelled (
+  id INT PRIMARY KEY NOT NULL,
+  reason VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE appointment_status (
+  id INT PRIMARY KEY NOT NULL,
+  type VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE appointments (
+  id INT PRIMARY KEY NOT NULL,
+  patient_id  INT REFERENCES patients(id) NOT NULL,
+  doctor_id  INT REFERENCES doctors(id) NOT NULL,
+  reason INT REFERENCES reasons(id) NOT NULL,
+  reporting_time TIMESTAMP,
+  status_id INT REFERENCES appointment_status(id) NOT NULL,
+  isCancel boolean NOT NULL,
+  cancel_id INT REFERENCES cancelled(id),
+  requested_at TIMESTAMP NOT NULL,
+  updated_at TIMESTAMP NOT NULL
+);
+
+CREATE TABLE consultations (
+  id INT PRIMARY KEY NOT NULL,
+  appointment_id INT REFERENCES appointments(id) NOT NULL,
+  in_time TIMESTAMP,
+  out_time TIMESTAMP
+);
+
+
+
+
+
+
+
+
+-- Inserting into users table
+
+INSERT INTO users VALUES (1, 'Elena', 'F', '2001-12-14', '123456789', '1231', '2022-04-04 13:05:00', '2022-04-04 13:01:00', '2022-04-04 13:01:00');
+INSERT INTO users VALUES (2, 'Caroline', 'F', '2001-06-16', '123433789', '1232', '2022-04-04 14:05:00', '2022-04-04 14:01:00', '2022-04-04 14:01:00');
+INSERT INTO users VALUES (3, 'Elizabeth', 'F', '2007-03-22', '114433789', '1233', '2022-04-04 15:05:00', '2022-04-04 15:01:00', '2022-04-04 15:01:00');
+INSERT INTO users VALUES (4, 'Ginny', 'F', '2008-03-21', '114433678', '1234', '2022-04-05 16:05:00', '2022-04-05 16:01:00', '2022-04-05 16:01:00');
+INSERT INTO users VALUES (5, 'Adam', 'M', '2004-04-04', '114411789', '1235', '2022-04-05 17:05:00', '2022-04-05 17:01:00', '2022-04-05 17:01:00');
+INSERT INTO users VALUES (6, 'Zack', 'M', '2007-03-01', '123433789', '1236', '2022-04-05 19:05:00', '2022-04-05 19:01:00', '2022-04-05 19:01:00');
+INSERT INTO users VALUES (7, 'Archana', 'F', '1985-12-12', '8214512412', '4415', '2022-03-06 18:15:42', '2022-03-06 17:51:42', '2022-03-06 18:04:42');
+INSERT INTO users VALUES (8, 'Vishvadeep', 'M', '1992-04-24', '7542142263', '1241', '2022-01-10 12:33:14', '2022-01-10 12:29:14', '2022-01-10 12:31:14');
+INSERT INTO users VALUES (9, 'Dinakar', 'M', '1983-04-27', '7569122453', '1244', '2022-02-24 01:15:33', '2022-02-24 01:01:33', '2022-02-24 01:12:33');
+INSERT INTO users VALUES (10, 'Swetha' ,'F' , '2011-04-04' ,'9949632411', '4445', '2022-01-22 10:04:15', '2022-01-22 10:01:15', '2022-01-22 10:01:15');
+INSERT INTO users VALUES (11, 'Upendra', 'M', '2007-04-15', '9888244124', '7484', '2022-02-16 04:01:22', '2022-02-16 04:00:22', '2022-02-16 04:00:22');
+INSERT INTO users VALUES (12, 'Devi', 'F', '1995-12-30', '7036352145', '7441', '2022-04-01 06:44:36', '2022-04-01 06:33:36', '2022-04-01 06:41:36');
+INSERT INTO users VALUES (13, 'Gilbert', 'M', '1996-06-19', '8760768024', '5702', '2022-04-09 10:43:00', '2022-04-09 10:40:20', '2022-04-09 10:40:20');
+INSERT INTO users VALUES (14, 'Vincent', 'M', '1998-04-24', '9767768321', '5462', '2022-04-09 11:25:00', '2022-04-09 11:20:00', '2022-04-09 11:20:00');
+INSERT INTO users VALUES (15, 'Bony Bennet', 'F', '1999-03-10', '6367768424', '7465', '2022-04-10 09:19:24', '2022-04-10 09:17:42', '2022-04-10 09:17:42');
+INSERT INTO users VALUES (16, 'Bruce Vane', 'M', '1992-07-13', '8360068331', '9761', '2022-04-10 12:23:14', '2022-04-10 12:22:33', '2022-04-10 12:22:33');
+INSERT INTO users VALUES (17, 'Alaric', 'M', '1994-05-20', '9450168221', '3465', '2022-04-10 14:32:16', '2022-04-10 14:30:21', '2022-04-10 14:30:21');
+INSERT INTO users VALUES (18, 'Matt Donavin', 'M', '2000-09-05', '7251079432', '2374', '2022-04-10 20:22:22', '2022-04-10 20:20:21', '2022-04-10 20:20:21');
+INSERT INTO users VALUES (19, 'Salman', 'M', '1997-04-22', '9876543210', '1212', '2022-04-08 08:08:23', '2022-03-08 08:06:23', '2022-03-08 08:08:23');
+INSERT INTO users VALUES (20, 'Faris', 'M', '1999-03-12', '8976543210', '1252', '2022-04-08 08:12:11', '2022-04-08 08:10:11', '2022-04-08 08:12:11');
+INSERT INTO users VALUES (21, 'Alfaz', 'M', '1988-01-22', '8936543310', '2252', '2022-04-08 08:23:45', '2022-04-08 08:21:45', '2022-04-08 08:23:45');
+INSERT INTO users VALUES (22, 'Sumaiya', 'F', '1983-05-03', '8936543111', '8123', '2022-04-08 08:29:08', '2022-04-08 08:27:08', '2022-04-08 08:29:08');
+INSERT INTO users VALUES (23, 'Halima', 'F', '1987-12-19', '8932223111', '4523', '2022-04-08 08:36:49', '2022-04-08 08:34:49', '2022-04-08 08:36:49');
+INSERT INTO users VALUES (24, 'Haroon', 'M', '1995-09-29', '8932223111', '9113', '2022-04-08 08:40:12', '2022-04-08 08:38:12', '2022-04-08 08:40:12');
+INSERT INTO users VALUES (25, 'Sachin', 'M', '1995-09-29', '8932883111', '7656', '2022-04-08 08:48:35', '2022-04-08 08:46:35', '2022-04-08 08:48:35');
+
+
+-- inserting into patients table
+
+INSERT INTO patients VALUES (1, 1, 'Mike', 'M', '2009-09-16', '123456789', 'abc', '2022-05-04 16:05:00', '2022-05-04 16:01:00');
+INSERT INTO patients VALUES (2, 2, 'Caroline', 'F', '2001-09-16', '123433789', 'abc', '2022-05-04 16:45:00', '2022-05-04 16:50:00');
+INSERT INTO patients VALUES (3, 1, 'Elena', 'F', '2001-12-14', '123456789', 'abc', '2022-05-04 16:50:00', '2022-05-04 16:52:00');
+INSERT INTO patients VALUES (4, 3, 'Elizabeth', 'F', '2007-03-22', '114433789', 'abc', '2022-05-04 17:00:00', '2022-05-04 17:01:00');
+INSERT INTO patients VALUES (5, 4, 'Ginny', 'F', '2008-03-21', '114433678', 'abc', '2022-05-04 17:07:00', '2022-05-04 17:08:00');
+INSERT INTO patients VALUES (6, 3, 'beth', 'F', '2007-08-16', '123465789', 'abc', '2022-05-04 17:12:00', '2022-05-04 17:18:00');
+INSERT INTO patients VALUES (7, 5, 'Adam', 'M', '2004-04-04', '114411789', 'abc', '2022-05-04 18:02:00', '2022-05-04 18:03:00');
+INSERT INTO patients VALUES (8, 4, 'Jack', 'M', '2009-09-16', '123456789', 'abc', '2022-05-04 18:02:00', '2022-05-04 18:03:00');
+INSERT INTO patients VALUES (9, 5, 'rachel', 'F', '2003-04-19', '123456789', 'abc', '2022-05-04 18:30:00', '2022-05-04 18:31:00');
+INSERT INTO patients VALUES (10, 6, 'Zack', 'M', '2007-03-01', '123433789', 'abc', '2022-05-04 18:35:00', '2022-05-04 18:40:00');
+INSERT INTO patients VALUES (11, 6, 'Rajesh', 'M', '2000-07-22', '7563222102', '9-448 gandhi colony Rajahmundry', '2022-04-02 09:07:33', '2022-04-02 09:07:33');
+INSERT INTO patients VALUES (12, 7, 'Archana', 'F', '1985-12-12', '8445451212', '1-22 opp old bustand nuzvid','2022-03-12 09:17:33', '2022-03-12 09:17:33');
+INSERT INTO patients VALUES (13, 7, 'Vishvadeep', 'M', '1992-04-24', '7454512121', '1-22 opp old bustand nuzvid', '2022-02-01 19:27:36', '2022-02-01 19:27:36');
+INSERT INTO patients VALUES (14, 8, 'Dinakar','M','1983-04-27','8454211515','2-55 near water tank A.colony, tirupathi','2022-03-06 15:14:55','2022-03-06 15:14:55');
+INSERT INTO patients VALUES (15, 9, 'Swetha', 'F', '2011-04-04', '6320448848', '1-25 veeravaram','2022-03-22 06:19:23', '2022-03-22 06:19:23');
+INSERT INTO patients VALUES (16, 10, 'Upendra', 'M', '2000-07-22', '9414842144', '1-125 kadiyam', '2022-03-14 05:14:45', '2022-03-14 05:14:45');
+INSERT INTO patients VALUES (17, 8, 'Devi', 'F', '2007-04-15', '9884228822', '2-55 near water tank A.colony, tirupathi', '2022-02-15 01:14:34', '2022-02-15 01:14:34');
+INSERT INTO patients VALUES (18, 11, 'Vijay', 'M', '2000-07-22', '7652142122', 'mahatma gandhi complex ravulapalem', '2022-01-31 12:11:23', '2022-01-31 12:11:23');
+INSERT INTO patients VALUES (19, 12, 'Pooja', 'F', '1995-12-30', '8012154521', '5-15 opp junior college kothapeta', '2022-03-22 11:11:33', '2022-03-22 11:11:33');
+INSERT INTO patients VALUES (20, 6, 'Deepika', 'F', '2000-07-22', '9545214434', '9-448 gandhi colony Rajahmundry', '2022-02-14 16:07:23', '2022-02-14 16:07:23');
+INSERT INTO patients VALUES (21, 13, 'Gilbert', 'M', '1996-06-19', '8760768024', 'abc', '2022-04-07 10:05:12', '2022-05-04 16:01:00');
+INSERT INTO patients VALUES (22, 14, 'Emma', 'F', '1996-03-08', '8760768024', 'abc', '2022-04-07 10:05:40', '2022-05-04 16:01:00');
+INSERT INTO patients VALUES (23, 13, 'Camy', 'F', '2006-06-20', '8760768024', 'abc', '2022-04-07 10:10:00', '2022-05-04 16:01:00');
+INSERT INTO patients VALUES (24, 15, 'Bony Bennet', 'F', '1999-03-10', '6367768424', 'abc', '2022-04-07 10:06:20', '2022-05-04 16:01:00');
+INSERT INTO patients VALUES (25, 16, 'Bruce Vane', 'M', '1992-07-13', '8360068331', 'abc', '2022-04-07 10:07:20', '2022-05-04 16:01:00');
+INSERT INTO patients VALUES (26, 17, 'perry', 'M', '2004-09-23', '9450168221', 'abc', '2022-04-07 10:11:27', '2022-05-04 16:01:00');
+INSERT INTO patients VALUES (27, 18, 'Vicky', 'M', '1998-02-06', '9450129000', 'abc', '2022-04-07 11:02:40', '2022-05-04 16:01:00');
+INSERT INTO patients VALUES (28, 18, 'Matt Donavin', 'M', '2000-09-05', '7251079432', 'abc', '2022-04-07 11:10:14', '2022-05-04 16:01:00');
+INSERT INTO patients VALUES (29, 14, 'Vincent', 'M', '1998-04-24', '9767768321', 'abc', '2022-04-07 12:15:33', '2022-05-04 16:01:00');
+INSERT INTO patients VALUES (30, 17, 'Alaric', 'M', '1994-05-20', '9450168221', 'abc', '2022-04-07 12:30:04', '2022-05-04 16:01:00');
+INSERT INTO patients VALUES (31, 25, 'Sachin', 'M', '1995-09-29', '8932883111', 'xyz', '2022-04-08 08:47:58', '2022-04-08 08:47:58');
+INSERT INTO patients VALUES (32, 19, 'Aslam', 'M', '2002-02-11', '9997683111', 'xyz', '2022-04-08 08:19:48', '2022-04-08 08:19:48');
+INSERT INTO patients VALUES (33, 20, 'Ashiq', 'M', '2002-05-13', '9997644518', 'xyz', '2022-04-08 08:23:21', '2022-04-08 08:23:21');
+INSERT INTO patients VALUES (34, 20, 'Aasiya', 'F', '2009-04-17', '9997644518', 'xyz', '2022-04-08 08:25:02', '2022-04-08 08:25:02');
+INSERT INTO patients VALUES (35, 21, 'Shihab', 'M', '1994-09-18', '9987644888', 'xyz', '2022-04-08 08:30:02', '2022-04-08 08:30:02');
+INSERT INTO patients VALUES (36, 22, 'Selvaraj', 'M', '1987-10-01', '9987644999', 'xyz', '2022-04-08 08:38:15', '2022-04-08 08:38:15');
+INSERT INTO patients VALUES (37, 23, 'Chandhini', 'F', '1976-01-30', '9968444999', 'xyz', '2022-04-08 08:44:30', '2022-04-08 08:44:30');
+INSERT INTO patients VALUES (38, 25, 'Sachin', 'M', '1995-09-29', '8932883111', 'xyz', '2022-04-08 08:47:58', '2022-04-08 08:47:58');
+INSERT INTO patients VALUES (39, 24, 'Hussain', 'M', '1988-07-23', '9987614999', 'xyz', '2022-04-08 08:50:51', '2022-04-08 08:50:51');
+INSERT INTO patients VALUES (40, 24, 'Haseena', 'F', '1992-02-13', '9987614999', 'xyz', '2022-04-08 08:54:22', '2022-04-08 08:54:22');
+
+
+
+--  inserting into specialisations table
+
+INSERT INTO specialisations VALUES (1, 'Paediatrician', 'Paediatrician care for children from birth to young adulthood. Some pediatricians specialize in pre-teens and teens, child abuse, or children developmental issues.');
+INSERT INTO specialisations VALUES (2, 'Cardiologist', 'Treating diseases related to heart and blood vessels.');
+INSERT INTO specialisations VALUES (3, 'Dermatologist', 'Treating diseases related to hair, skin, and nails.');
+INSERT INTO specialisations VALUES (4, 'Ophthalmologist', 'Dealing with health problems related to eye disorders');
+
+--  inserting into doctors table
+
+INSERT INTO doctors VALUES (1, 9, 'MBBS, MD', 12);
+INSERT INTO doctors VALUES (2, 16, 'MBBS, MD', 4);
+INSERT INTO doctors VALUES (3, 21, 'MBBS, MD, FRCS (London)', 7);
+INSERT INTO doctors VALUES (4, 25, 'MBBS, MS', 2);
+INSERT INTO doctors VALUES (5, 23, 'MBBS, MD,', 14);
+
+-- inserting into doctors_specilisations
+
+
+INSERT INTO doctors_specialisations VALUES (1,4,1);
+INSERT INTO doctors_specialisations VALUES (2,3,2);
+INSERT INTO doctors_specialisations VALUES (3,1,5);
+INSERT INTO doctors_specialisations VALUES (4,2,4);
+INSERT INTO doctors_specialisations VALUES (5,4,3);
+
+--  inserting into roles
+
+INSERT INTO roles VALUES (1, 'Patient');
+INSERT INTO roles VALUES (2, 'Receptionist');
+INSERT INTO roles VALUES (3, 'Doctor');
+
+--  inserting into users_roles
+
+INSERT INTO users_roles VALUES (1, 1);
+INSERT INTO users_roles VALUES (2, 1);
+INSERT INTO users_roles VALUES (3, 1);
+INSERT INTO users_roles VALUES (4, 1);
+INSERT INTO users_roles VALUES (5, 1);
+INSERT INTO users_roles VALUES (6, 1);
+INSERT INTO users_roles VALUES (7, 2);
+INSERT INTO users_roles VALUES (8, 1);
+INSERT INTO users_roles VALUES (9, 3);
+INSERT INTO users_roles VALUES (10, 1);
+INSERT INTO users_roles VALUES (11, 1);
+INSERT INTO users_roles VALUES (12, 2);
+INSERT INTO users_roles VALUES (13, 1);
+INSERT INTO users_roles VALUES (14, 1);
+INSERT INTO users_roles VALUES (15, 1);
+INSERT INTO users_roles VALUES (16, 3);
+INSERT INTO users_roles VALUES (17, 2);
+INSERT INTO users_roles VALUES (18, 1);
+INSERT INTO users_roles VALUES (19, 1);
+INSERT INTO users_roles VALUES (20, 1);
+INSERT INTO users_roles VALUES (21, 3);
+INSERT INTO users_roles VALUES (22, 2);
+INSERT INTO users_roles VALUES (23, 1);
+INSERT INTO users_roles VALUES (24, 1);
+INSERT INTO users_roles VALUES (25, 1);
+
+
+--  inserting into receptionists
+
+INSERT INTO receptionists VALUES (1, 7, 'B.COM');
+INSERT INTO receptionists VALUES (2, 12, 'BBM');
+INSERT INTO receptionists VALUES (3, 17, 'BBA');
+INSERT INTO receptionists VALUES (4, 22, 'BSc');
+
+-- inserting into weekdays
+
+INSERT INTO weekdays VALUES (1, 'MONDAY'),
+                            (2, 'TUESDAY'),
+			                (3, 'WEDNESDAY'),
+				            (4, 'THURSDAY'),
+				            (5, 'FRIDAY'),
+				            (6, 'SATURDAY'),
+				            (7, 'SUNDAY');
+
+
+--  inserting reasons
+
+INSERT INTO reasons VALUES (1, 'New Baby Well Check'),
+				           (2, 'Common Colds'),
+				           (3, 'Nutritional Advice'),
+				           (4, 'Vaccination'),
+				           (5, 'Ear Infections'),
+				           (6, 'Chest Pain'),
+				           (7, 'High Blood Pressure'),
+				           (8, 'Diabetes'),
+				           (9, 'Shortness of breath or dizziness'),
+				           (10, 'Psoriasis'),
+				           (11, 'Skin Cancer'),
+				           (12, 'Hair Loss'),
+				           (13, 'Eye pain'),
+				           (14, 'Change in vision'),
+				           (15, 'other');
+
+
+
+
+--  inserting into cancelled
+
+INSERT INTO cancelled VALUES(0, 'Not Cancelled');
+INSERT INTO cancelled VALUES(1, 'Doctor unavailable');
+INSERT INTO cancelled VALUES(2, 'No slots left');
+INSERT INTO cancelled VALUES(3, 'Doctors on Strike');
+INSERT INTO cancelled VALUES(4, 'Nurses on Strike');
+INSERT INTO cancelled VALUES(5, 'Other');
+
+--  inserting into appointment status
+
+INSERT INTO appointment_status VALUES (1, 'REQUESTED');
+INSERT INTO appointment_status VALUES (2, 'APPROVED');
+INSERT INTO appointment_status VALUES (3, 'CANCELLED');
+INSERT INTO appointment_status VALUES (4, 'REJECTED');
+INSERT INTO appointment_status VALUES (5, 'FINISHED');
+
+
+--  inserting into appointments
+
+
+INSERT INTO appointments VALUES (1, 1, 1, 1, '2022-04-05 14:00:00', 2, FALSE, 0, '2022-04-05 09:05:00', '2022-04-05 09:08:00');
+INSERT INTO appointments VALUES (2, 2, 1, 2, '2022-04-05 14:10:00', 2, FALSE, 0, '2022-04-05 09:10:00', '2022-04-05 09:15:00');
+INSERT INTO appointments VALUES (3, 3, 1, 4, '2022-04-05 14:20:00', 2, FALSE, 0, '2022-04-05 09:18:00', '2022-04-05 09:30:00');
+INSERT INTO appointments VALUES (4, 3, 1, 4, '2022-04-05 14:20:00', 3, TRUE, 1, '2022-04-05 09:20:00', '2022-04-05 09:36:00');
+INSERT INTO appointments VALUES (5, 6, 1, 1, '2022-04-05 14:50:00', 3, TRUE, 1, '2022-04-05 09:25:00', '2022-04-05 09:38:00');
+INSERT INTO appointments VALUES (6, 4, 1, 5, '2022-04-05 14:55:00', 2, FALSE, 0, '2022-04-05 10:05:00', '2022-04-05 10:06:00');
+INSERT INTO appointments VALUES (7, 1, 1, 1, '2022-04-05 15:00:00', 3, TRUE, 2, '2022-04-05 10:05:30', '2022-04-05 10:45:00');
+INSERT INTO appointments VALUES (8, 5, 1, 5, '2022-04-05 15:20:00', 2, FALSE, 0, '2022-04-05 10:35:00', '2022-04-05 10:45:30');
+INSERT INTO appointments VALUES (9, 7, 1, 2, '2022-04-05 15:25:00', 2, FALSE, 0, '2022-04-05 11:05:00', '2022-04-05 11:06:00');
+INSERT INTO appointments VALUES (10, 3, 1, 1, '2022-04-05 15:30:00', 3, TRUE, 1, '2022-04-05 12:05:00', '2022-04-05 12:15:00');
+INSERT INTO appointments VALUES (11, 13, 2, 4, '2022-04-06 00:00:00', 2, TRUE, 3, '2022-04-06 10:08:30', '2022-04-06 10:08:50');
+INSERT INTO appointments VALUES (12, 14, 3, 5, '2022-04-06 10:10:00', 2, FALSE, 0, '2022-04-06 10:09:00', '2022-04-06 10:09:20');
+INSERT INTO appointments VALUES (13, 13, 1, 5, '2022-04-06 10:13:00', 2, FALSE, 0, '2022-04-06 10:09:45', '2022-04-06 10:10:20');
+INSERT INTO appointments VALUES (14, 15, 1, 4, '2022-04-06 11:12:02', 2, FALSE, 0,  '2022-04-06 10:10:00', '2022-04-06 10:14:00');
+INSERT INTO appointments VALUES (15, 16, 1, 4, '2022-04-06 11:14:00', 3, TRUE, 1, '2022-04-06 10:20:20', '2022-04-06 10:23:20');
+INSERT INTO appointments VALUES (16, 18, 3, 5, '2022-04-06 11:17:05', 2, FALSE, 0, '2022-04-06 10:27:20', '2022-04-06 10:30:20');
+INSERT INTO appointments VALUES (17, 14, 1, 5, '2022-04-06 11:24:10', 2, FALSE, 0, '2022-04-06 10:31:27', '2022-04-06 10:37:27');
+INSERT INTO appointments VALUES (18, 15, 1, 5, '2022-04-06 15:20:00', 2, FALSE, 0, '2022-04-06 10:35:00', '2022-04-06 10:45:30');
+INSERT INTO appointments VALUES (19, 19, 1, 2, '2022-04-06 15:25:00', 2, FALSE, 0, '2022-04-06 11:05:00', '2022-04-06 11:06:00');
+INSERT INTO appointments VALUES (20, 20, 1, 1, '2022-04-06 15:30:00', 3, TRUE, 1, '2022-04-06 12:05:00', '2022-04-06 12:15:00');
+INSERT INTO appointments VALUES (21, 21, 1, 1, '2022-04-07 11:10:00', 2, FALSE, 0, '2022-04-07 10:05:12', '2022-04-07 10:07:12');
+INSERT INTO appointments VALUES (22, 22, 1, 2, '2022-04-07 11:10:21', 2, FALSE, 0, '2022-04-07 10:05:40', '2022-04-07 10:08:40');
+INSERT INTO appointments VALUES (23, 23, 1, 4, '2022-04-07 11:12:02', 2, FALSE, 0,  '2022-04-07 10:10:00', '2022-04-07 10:14:00');
+INSERT INTO appointments VALUES (24, 24, 1, 4, '2022-04-07 11:14:00', 3, TRUE, 1, '2022-04-07 10:20:20', '2022-04-07 10:23:20');
+INSERT INTO appointments VALUES (25, 21, 3, 5, '2022-04-07 11:17:05', 2, FALSE, 0, '2022-04-07 10:27:20', '2022-04-07 10:30:20');
+INSERT INTO appointments VALUES (26, 26, 1, 5, '2022-04-07 11:24:10', 2, FALSE, 0, '2022-04-07 10:31:27', '2022-04-07 10:37:27');
+INSERT INTO appointments VALUES (27, 22, 4, 1, '2022-04-07 11:25:23', 3, TRUE, 1, '2022-04-07 11:02:40', '2022-04-07 11:06:40');
+INSERT INTO appointments VALUES (28, 28, 1, 2, '2022-04-07 11:25:58', 2, FALSE, 0, '2022-05-04 11:05:00', '2022-04-07 11:08:00');
+INSERT INTO appointments VALUES (29, 29, 1, 1, '2022-04-07 11:30:10', 3, TRUE, 2,  '2022-04-07 11:10:14', '2022-04-07 11:10:49');
+INSERT INTO appointments VALUES (30, 30, 1, 1, '2022-04-07 12:20:00', 2, FALSE, 0, '2022-04-07 12:30:04', '2022-04-07 12:35:34');
+INSERT INTO appointments VALUES (31, 1, 3, 1, '2022-05-08 13:50:00', 2, FALSE, 0, '2022-05-08 10:05:02', '2022-05-08 10:06:02');
+INSERT INTO appointments VALUES (32, 1, 2, 2, '2022-05-08 14:10:00', 2, FALSE, 0, '2022-05-08 10:06:45', '2022-05-08 10:07:20');
+INSERT INTO appointments VALUES (33, 4, 5, 4, '2022-05-08 14:20:00', 2, FALSE, 0, '2022-05-08 10:07:35', '2022-05-08 10:07:56');
+INSERT INTO appointments VALUES (34, 3, 2, 4, '2022-05-08 00:00:00', 2, TRUE, 3, '2022-05-08 10:08:30', '2022-05-08 10:08:50');
+INSERT INTO appointments VALUES (35, 5, 3, 5, '2022-05-08 14:30:00', 2, FALSE, 0, '2022-05-08 10:09:00', '2022-05-08 10:09:20');
+INSERT INTO appointments VALUES (36, 5, 1, 5, '2022-05-08 14:40:00', 2, FALSE, 0, '2022-05-08 10:09:45', '2022-05-08 10:10:20');
+INSERT INTO appointments VALUES (37, 6, 4, 1, '2022-05-08 00:00:00', 2, TRUE, 1, '2022-05-08 10:10:45', '2022-05-08 10:11:10');
+INSERT INTO appointments VALUES (38, 2, 4, 2, '2022-05-08 14:50:00', 2, FALSE, 0, '2022-05-08 10:11:38', '2022-05-08 10:12:24');
+INSERT INTO appointments VALUES (39, 2, 2, 1, '2022-05-08 00:00:00', 2, TRUE, 2, '2022-05-08 10:12:45', '2022-05-08 10:13:20');
+INSERT INTO appointments VALUES (40, 3, 2, 1, '2022-05-08 15:00:00', 2, FALSE, 0, '2022-05-08 10:13:36', '2022-05-08 10:14:10');
+
+
+--  inserting into consultations
+
+INSERT INTO consultations VALUES (1, 1, '2022-04-05 14:10:00', '2022-04-05 14:19:02');
+INSERT INTO consultations VALUES (2, 2, '2022-04-05 14:20:00', '2022-04-05 14:27:00');
+INSERT INTO consultations VALUES (3, 3, '2022-04-05 14:28:00', '2022-04-05 14:30:20');
+INSERT INTO consultations VALUES (4, 6, '2022-04-05 15:00:00', '2022-04-05 15:06:00');
+INSERT INTO consultations VALUES (5, 8, '2022-04-05 15:30:00', '2022-04-05 15:42:00');
+INSERT INTO consultations VALUES (6, 9, '2022-04-05 15:42:00', '2022-04-05 15:54:00');
+INSERT INTO consultations VALUES (7, 12, '2022-04-06 10:20:00', '2022-04-06 10:29:02');
+INSERT INTO consultations VALUES (8, 13, '2022-04-06 10:30:00', '2022-04-06 10:36:00');
+INSERT INTO consultations VALUES (9, 14, '2022-04-06 11:30:00', '2022-04-06 11:35:20');
+INSERT INTO consultations VALUES (10, 16, '2022-04-06 11:36:00', '2022-04-06 11:43:00');
+INSERT INTO consultations VALUES (11, 17, '2022-04-06 11:44:00', '2022-04-06 11:52:00');
+INSERT INTO consultations VALUES (12, 18, '2022-04-06 15:30:00', '2022-04-06 15:37:00');
+INSERT INTO consultations VALUES (13, 21, '2022-04-06 15:38:00', '2022-04-06 15:46:00');
+INSERT INTO consultations VALUES (14, 22, '2022-04-06 15:47:00', '2022-04-06 15:57:00');
+INSERT INTO consultations VALUES (15, 21, '2022-04-07 11:40:00', '2022-04-07 11:47:10');
+INSERT INTO consultations VALUES (16, 22, '2022-04-07 11:48:10', '2022-04-07 11:57:05');
+INSERT INTO consultations VALUES (17, 23, '2022-04-07 11:58:00', '2022-04-07 12:10:22');
+INSERT INTO consultations VALUES (18, 25, '2022-04-07 12:11:00', '2022-04-07 12:16:13');
+INSERT INTO consultations VALUES (19, 26, '2022-04-07 12:17:02', '2022-04-07 12:25:00');
+INSERT INTO consultations VALUES (20, 28, '2022-04-07 12:26:00', '2022-04-07 12:37:00');
+INSERT INTO consultations VALUES (21, 30, '2022-04-07 12:38:00', '2022-04-07 12:46:11');
+INSERT INTO consultations VALUES (22, 31, '2022-05-08 14:00:00', '2022-05-08 14:10:00');
+INSERT INTO consultations VALUES (23, 32, '2022-05-08 14:10:00', '2022-05-08 14:20:00');
+INSERT INTO consultations VALUES (24, 33, '2022-05-08 14:20:00', '2022-05-08 14:30:00');
+INSERT INTO consultations VALUES (25, 35, '2022-05-08 14:35:00', '2022-05-08 14:54:00');
+INSERT INTO consultations VALUES (26, 36, '2022-05-08 15:00:00', '2022-05-08 15:10:00');
+INSERT INTO consultations VALUES (27, 38, '2022-05-08 15:10:00', '2022-05-08 15:20:00');
+INSERT INTO consultations VALUES (28, 40, '2022-05-08 15:20:00', '2022-05-08 15:37:00');
+
+
+
+
+
